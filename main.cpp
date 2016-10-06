@@ -4,6 +4,7 @@
 #include <cmath>
 #include <fstream>
 #include <io.h>
+#include <direct.h>
 #include <cstring>
 #include <opencv2/core/core.hpp>  
 #include <opencv2/highgui/highgui.hpp>  
@@ -74,6 +75,21 @@ public:
 		return (cx >= 0 && cx < x_bound&&cy < y_bound&&cy >= 0);
 	}
 
+	void resetVis()
+	{
+		memset(vis, 0, sizeof(vis));
+		vis = new bool*[x_bound];
+		for (int i = 0; i < x_bound; i++)
+		{
+			vis[i] = new bool[y_bound];
+			for (int j = 0; j < y_bound; j++)
+			{
+				vis[i][j] = false;
+			}
+		}
+		count = 0;
+	}
+
 	void dfs(int x, int y)
 	{
 		channel.at<Vec3b>(x, y)[0] = 0;
@@ -95,6 +111,14 @@ public:
 	void process()
 	{
 		dfs(0, 0);
+		resetVis();
+		dfs(0, y_bound - 1);
+		resetVis();
+		dfs(x_bound - 1, 0);
+		resetVis();
+		dfs(x_bound - 1, y_bound - 1);
+
+
 		//for (int i = 0; i < img.rows; i++)
 		//{
 		//	for (int j = 0; j < img.cols - 1; j++)
@@ -242,6 +266,7 @@ int main()
 			//getchar();
 			GetBackground tmp = GetBackground(name, wkdir, i);
 			//cout <<"wkdir"<< wkdir << endl; getchar();
+			_mkdir(wkdir.c_str());
 			tmp.process();
 			//tmp.present();
 
