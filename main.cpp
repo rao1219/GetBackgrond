@@ -110,13 +110,7 @@ public:
 
 	void process()
 	{
-		dfs(0, 0);
-		resetVis();
-		dfs(0, y_bound - 1);
-		resetVis();
-		dfs(x_bound - 1, 0);
-		resetVis();
-		dfs(x_bound - 1, y_bound - 1);
+		dfs(0, 0),dfs(0, y_bound - 1),dfs(x_bound - 1, 0),dfs(x_bound - 1, y_bound - 1);
 
 
 		//for (int i = 0; i < img.rows; i++)
