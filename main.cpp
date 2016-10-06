@@ -124,6 +124,8 @@ public:
 		out.close();
 		imwrite(res_dir + "\\" + std::to_string(label)+".png", channel);
 
+		//cout << res_dir + "\\" + std::to_string(label) + ".png" << endl; getchar();
+
 	}
 	
 	void present()
@@ -163,69 +165,89 @@ void getFiles(string path, vector<string>& files)
 	}
 }
 
-int main()
+void _getFiles(string path, vector<string>& files)
 {
-	
-	String name, wkdir;
-	String myclass = "bandage_1";
-	int _size = 49;
-	for (int i = 1; i <= _size; i++)
+	//文件句柄  
+	long   hFile = 0;
+	//文件信息  
+	struct _finddata_t fileinfo;
+	string p;
+	if ((hFile = _findfirst(p.assign(path).append("\\*").c_str(), &fileinfo)) != -1)
 	{
-		//int a; cin >> a;
-		name = "flow_viz\\", wkdir = "result\\";
-		name += myclass, wkdir += myclass;
-		name += "\\frame_00";
-
-		if (i < 10)
-			name += "0";
-		name += std::to_string(i);
-		name += ".png";
-		std::cout << name << std::endl;
-
-		GetBackground tmp = GetBackground(name, wkdir, i);
-		tmp.process();
-		//tmp.present();
-
+		do
+		{
+			if (strcmp(fileinfo.name, ".") != 0 && strcmp(fileinfo.name, "..") != 0)
+				files.push_back(p.assign(path).append("\\").append(fileinfo.name));
+		} while (_findnext(hFile, &fileinfo) == 0);
+		_findclose(hFile);
 	}
-
-	return 0;
 }
 
 //int main()
 //{
-//	vector<string> files;
-//	char * oripath = ".\\flow_viz\\";
-//	getFiles(oripath, files);
-//	int size = files.size();
-//	cout << size << endl;
-//	int a; cin >> a;
-//	for (int j = 0; j < size; j++)
+//	
+//	String name, wkdir;
+//	String myclass = "bandage_1";
+//	int _size = 49;
+//	for (int i = 1; i <= _size; i++)
 //	{
-//		String name, wkdir;
-//		vector<string> frames;
-//		String myclass = files.at(j);
-//		getFiles(oripath+myclass+"\\", frames);
-//		int _size = frames.size();
-//		for (int i = 1; i <= _size; i++)
-//		{
-//			//int a; cin >> a;
-//			name = "flow_viz\\", wkdir = "result\\";
-//			name += myclass, wkdir += myclass;
-//			name += "\\frame_00";
+//		//int a; cin >> a;
+//		name = "flow_viz\\", wkdir = "result\\";
+//		name += myclass, wkdir += myclass;
+//		name += "\\frame_00";
 //
-//			if (i < 10)
-//				name += "0";
-//			name += std::to_string(i);
-//			name += ".png";
-//			std::cout << name << std::endl;
+//		if (i < 10)
+//			name += "0";
+//		name += std::to_string(i);
+//		name += ".png";
+//		std::cout << name << std::endl;
 //
-//			GetBackground tmp = GetBackground(name, wkdir, i);
-//			tmp.process();
-//			//tmp.present();
-//
-//		}
+//		GetBackground tmp = GetBackground(name, wkdir, i);
+//		tmp.process();
+//		//tmp.present();
 //
 //	}
-//	
+//
 //	return 0;
 //}
+
+int main()
+{
+	vector<string> files;
+	char * oripath = ".\\flow_viz\\";
+	_getFiles(oripath, files);
+	int size = files.size();
+
+	for (int j = 0; j < size; j++)
+	{
+		String name, wkdir;
+		vector<string> frames;
+		String myclass = files.at(j);
+		cout << myclass << endl;
+		_getFiles(myclass+"\\", frames);
+		int _size = frames.size();
+		cout << _size << endl;
+		for (int i = 1; i <= _size; i++)
+		{
+			//int a; cin >> a;
+			name = "", wkdir = ".\\result\\\\";
+			name += myclass, wkdir += myclass.substr(2,myclass.length()-2);
+			name += "\\frame_00";
+
+			if (i < 10)
+				name += "0";
+			name += std::to_string(i);
+			name += ".png";
+			//std::cout <<"name:" <<name << std::endl;
+			//getchar();
+			GetBackground tmp = GetBackground(name, wkdir, i);
+			//cout <<"wkdir"<< wkdir << endl; getchar();
+			tmp.process();
+			//tmp.present();
+
+		}
+
+	}
+	
+	return 0;
+}
